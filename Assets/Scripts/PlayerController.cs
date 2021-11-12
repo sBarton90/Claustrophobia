@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     }
 
     
-    void FixedUpdate() // Run our two methods every frame
+    void FixedUpdate() // Run our three methods every frame
     {
         Run();
         ClimbLadder();
