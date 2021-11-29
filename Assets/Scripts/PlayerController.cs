@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     CapsuleCollider2D myBodyCollider;
     BoxCollider2D myFeetCollider;
     float gravityScaleAtStart;
+    Animator myAnimator;
 
     [Header("Movement Variables")]
     [SerializeField] float runSpeed = 5;
@@ -21,7 +22,9 @@ public class PlayerController : MonoBehaviour
         myRigidbody = GetComponent<Rigidbody2D>();
         myBodyCollider = GetComponent<CapsuleCollider2D>();
         myFeetCollider = GetComponent<BoxCollider2D>();
+        myAnimator = GetComponent<Animator>();
         gravityScaleAtStart = myRigidbody.gravityScale;
+
     }
 
     
@@ -50,15 +53,22 @@ public class PlayerController : MonoBehaviour
     void Run() { // Apply the value of controller input to rigidboy's velocity multiplied by our runSpeed
         Vector2 playerVelocity = new Vector2(moveInput.x * runSpeed, myRigidbody.velocity.y); // Set velocity of players x without changing the y value.
         myRigidbody.velocity = playerVelocity;
+
+        bool playerHasHorizontalSpeed = Mathf.Abs(myRigidbody.velocity.x) > Mathf.Epsilon;
+        myAnimator.SetBool("isRunning", playerHasHorizontalSpeed);
     }
 
     void ClimbLadder() { // if Player is able to climb ladder, do so.
         if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ladder"))) { // If not touching the ladder layer, unable to climb.
             myRigidbody.gravityScale = gravityScaleAtStart; // if not climbing a ladder, player gravity is normal
+            myAnimator.SetBool("isClimbing", false);
             return;
         }
         Vector2 climbVelocity = new Vector2(myRigidbody.velocity.x, moveInput.y * climbSpeed);
         myRigidbody.velocity = climbVelocity;
+
+        bool playerHasVerticalSpeed = Mathf.Abs(myRigidbody.velocity.y) > Mathf.Epsilon;
+        myAnimator.SetBool("isClimbing", playerHasVerticalSpeed);
         myRigidbody.gravityScale = 0f; // if climbing a ladder, gravitiy is 0. To prevent sliding down the ladder.
     }
 
