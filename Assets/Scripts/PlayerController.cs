@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    
     void FixedUpdate() // Run our three methods every frame
     {
         Run();
