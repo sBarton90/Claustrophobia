@@ -5,11 +5,15 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] AudioSource Footsteps;
+
     Vector2 moveInput;
+    float gravityScaleAtStart;
+
+    [Header("Player Components")]
     Rigidbody2D myRigidbody;
     CapsuleCollider2D myBodyCollider;
     BoxCollider2D myFeetCollider;
-    float gravityScaleAtStart;
     Animator myAnimator;
 
     [Header("Movement Variables")]
@@ -24,6 +28,7 @@ public class PlayerController : MonoBehaviour
         myFeetCollider = GetComponent<BoxCollider2D>();
         myAnimator = GetComponent<Animator>();
         gravityScaleAtStart = myRigidbody.gravityScale;
+        Footsteps = GetComponent<AudioSource>();
 
     }
 
@@ -55,7 +60,18 @@ public class PlayerController : MonoBehaviour
 
         bool playerHasHorizontalSpeed = Mathf.Abs(myRigidbody.velocity.x) > Mathf.Epsilon;
         myAnimator.SetBool("isRunning", playerHasHorizontalSpeed);
-    }
+
+        // Moving Audio
+        if (myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground")) & moveInput.x != 0) //Only play walking sounds while grounded
+        {
+            Footsteps.mute = false;
+        }
+        else
+        {
+            Footsteps.mute = true;
+        }
+
+        }
 
     void ClimbLadder() { // if Player is able to climb ladder, do so.
         if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ladder"))) { // If not touching the ladder layer, unable to climb.
