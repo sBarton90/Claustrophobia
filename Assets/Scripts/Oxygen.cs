@@ -5,6 +5,8 @@ using UnityEngine.UI; // This is for getting image componenet of the bar
 
 public class Oxygen : MonoBehaviour
 {
+    [SerializeField] AudioClip pickupChime;
+
     [SerializeField] 
     private CanvasGroup DeathCan;
     [SerializeField] 
@@ -46,6 +48,7 @@ public class Oxygen : MonoBehaviour
         {
             O2 += 15; //Add 15 seconds of oxygen
             if(O2 > 120) { O2 = 120; } // Prevent o2 from going over max
+            GetComponent<AudioSource>().PlayOneShot(pickupChime);
             Destroy(collision.gameObject);
         }
     }
